@@ -139,7 +139,7 @@ public class UCScanNetworkController implements INetworkScanListener/* , ChangeL
 		if (file != null) {
 			try {
 				Files.write(file.toPath(), new NetworkItemList(data).toJson(true).getBytes(),
-						StandardOpenOption.TRUNCATE_EXISTING);
+						StandardOpenOption.TRUNCATE_EXISTING,StandardOpenOption.CREATE);
 			} catch (IOException e) {
 				MessageBox.Error(e.getMessage(), "Kayýt esnasýnda hata");
 				e.printStackTrace();
