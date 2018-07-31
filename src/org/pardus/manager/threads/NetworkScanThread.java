@@ -1,25 +1,26 @@
 package org.pardus.manager.threads;
 
-import java.lang.Thread.State;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.pardus.manager.helper.HostNameRequest;
 import org.pardus.manager.helper.NetworkHelper;
 import org.pardus.manager.model.NetworkItem;
 
 import javafx.fxml.FXML;
 
 public class NetworkScanThread extends Thread {
-	private String ipRanges;
 
-	public String getIpRanges() {
-		return ipRanges;
+	private NetworkScanParams params;
+
+	public NetworkScanParams getParams() {
+		return params;
 	}
 
-	public void setIpRanges(String ipRanges) {
-		this.ipRanges = ipRanges;
+	public void setParams(NetworkScanParams params) {
+		this.params = params;
 	}
 
 	public List<INetworkScanListener> getListeners() {
@@ -63,8 +64,27 @@ public class NetworkScanThread extends Thread {
 			InetAddress ip = InetAddress.getByName(ipAddr);
 //			InetAddress ip = InetAddress.getByAddress( new byte[]{10, 16, 108, 114});
 			if (ip.isReachable(500)) {
-				String hostName = ip.getHostName();
-				return new NetworkItem(ipAddr, hostName).setOS(NetworkHelper.IsLinuxHost(ipAddr) ? "Linux" : "Unknown");
+				boolean isLinux = NetworkHelper.IsLinuxHost(ipAddr);
+				String hostName = null;
+				if (isLinux && params.isUseSSH()) {
+					System.out.println("Is linux");
+					HostNameRequest r = new HostNameRequest(params.getSSHUserName(), ipAddr,
+							params.getSSHUserPassword(), 1000);
+
+					try {
+						hostName = r.ReadHostName();
+						System.out.println("SSH ile aldým:" + hostName);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+
+				}
+
+				if (hostName == null || hostName.trim().isEmpty()) {
+					hostName = ip.getHostName();
+					System.out.println("Get Host ile aldým:" + hostName);
+				}
+				return new NetworkItem(ipAddr, hostName).setOS(isLinux ? "Linux" : "Unknown");
 			}
 
 		}
@@ -102,7 +122,7 @@ public class NetworkScanThread extends Thread {
 		stop = false;
 		active = true;
 		try {
-			String[] parts = ipRanges.split(",");
+			String[] parts = params.getIPRange().split(",");
 			// Birden fazla ip aralýðý var ise böl
 			if (parts != null && parts.length > 0) {
 				for (String range : parts) {

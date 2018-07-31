@@ -1,51 +1,33 @@
 package org.pardus.manager.controls;
 
-import javafx.fxml.FXML;
-
-import javafx.scene.control.Button;
-
-import javafx.scene.control.TextField;
-import javafx.scene.control.cell.PropertyValueFactory;
-
 import java.io.File;
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.nio.file.Files;
-import java.nio.file.OpenOption;
 import java.nio.file.StandardOpenOption;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Observable;
 
 import org.pardus.manager.helper.MessageBox;
-import org.pardus.manager.helper.NetworkHelper;
 import org.pardus.manager.model.NetworkItem;
 import org.pardus.manager.model.NetworkItemList;
 import org.pardus.manager.threads.INetworkScanListener;
+import org.pardus.manager.threads.NetworkScanParams;
 import org.pardus.manager.threads.NetworkScanThread;
 
 import javafx.application.Platform;
-import javafx.beans.InvalidationListener;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-
-import javafx.scene.control.ListView;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TableColumn;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
+import javafx.scene.control.CheckBox;
 
 public class UCScanNetworkController implements INetworkScanListener/* , ChangeListener<Number> */ {
 	@FXML
@@ -84,7 +66,8 @@ public class UCScanNetworkController implements INetworkScanListener/* , ChangeL
 				btnScan.setDisable(true);
 				data.clear();
 				scanner = new NetworkScanThread();
-				scanner.setIpRanges(tIpRange.getText());
+				scanner.setParams(new NetworkScanParams(cbUseSSH.isSelected(), tSSHUserName.getText(),
+						tSSHPassword.getText(), tIpRange.getText()));
 				scanner.addListener(this);
 				scanner.start();
 				scanner.waitForIsActive(true, 5000);
@@ -118,6 +101,12 @@ public class UCScanNetworkController implements INetworkScanListener/* , ChangeL
 	ProgressBar pbStatus;
 	@FXML
 	BorderPane ruknettin;
+	@FXML
+	CheckBox cbUseSSH;
+	@FXML
+	TextField tSSHUserName;
+	@FXML
+	TextField tSSHPassword;
 
 	@Override
 	public void newItemAdded(NetworkItem item) {
@@ -149,11 +138,9 @@ public class UCScanNetworkController implements INetworkScanListener/* , ChangeL
 		File file = f.showSaveDialog(null);
 		if (file != null) {
 			try {
-				Files.write(file.toPath(), 
-						new NetworkItemList(data).toJson(true).getBytes(), 
+				Files.write(file.toPath(), new NetworkItemList(data).toJson(true).getBytes(),
 						StandardOpenOption.TRUNCATE_EXISTING);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				MessageBox.Error(e.getMessage(), "Kayýt esnasýnda hata");
 				e.printStackTrace();
 			}
@@ -170,12 +157,11 @@ public class UCScanNetworkController implements INetworkScanListener/* , ChangeL
 		if (file != null) {
 			try {
 				byte[] bytes = Files.readAllBytes(file.toPath());
-				String s = new String(bytes); 
+				String s = new String(bytes);
 				NetworkItemList list = NetworkItemList.fromJson(s, NetworkItemList.class);
 				this.data.clear();
 				this.data.addAll(list.getData());
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				MessageBox.Error(e.getMessage(), "Yukleme esnasýnda hata");
 				e.printStackTrace();
 			}
