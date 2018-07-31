@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.layout.BorderPane?>
+
+<BorderPane fx:id="root" prefHeight="528.0" prefWidth="529.0" stylesheets="@application.css" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.pardus.manager.MainPanelController">
+
+   <top>
+      <MenuBar BorderPane.alignment="CENTER">
+        <menus>
+          <Menu mnemonicParsing="false" text="Dosya">
+            <items>
+              <MenuItem mnemonicParsing="false" onAction="#ActionCloseApplication" text="Uygulamadan Çık" />
+            </items>
+          </Menu>
+            <Menu mnemonicParsing="false" text="Bilgi">
+              <items>
+                <MenuItem mnemonicParsing="false" onAction="#GetOSInfo" text="İşletim Sistemi Hk." />
+                  <MenuItem mnemonicParsing="false" onAction="#ActionScanNetwork" text="IP Tarama" />
+              </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Sistem">
+              <items>
+                <MenuItem mnemonicParsing="false" onAction="#ChangeMachineName" text="Makine Adı" />
+              </items>
+            </Menu>
+        </menus>
+      </MenuBar>
+   </top>
+   <center>
+
+   </center>
+   <center>
+      <BorderPane fx:id="contentPanel" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+   </center>
+</BorderPane>
