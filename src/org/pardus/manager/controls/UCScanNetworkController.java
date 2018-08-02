@@ -14,6 +14,7 @@ import org.pardus.manager.threads.NetworkScanThread;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -29,7 +30,8 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.scene.control.CheckBox;
 
-public class UCScanNetworkController implements INetworkScanListener/* , ChangeListener<Number> */ {
+public class UCScanNetworkController
+		implements INetworkScanListener, ListChangeListener<NetworkItem>/* , ChangeListener<Number> */ {
 	@FXML
 	private TextField tIpRange;
 	@FXML
@@ -43,7 +45,16 @@ public class UCScanNetworkController implements INetworkScanListener/* , ChangeL
 	@FXML
 	TableColumn<NetworkItem, String> colOS;
 
-	private ObservableList<NetworkItem> data;
+	private ObservableList<NetworkItem> dataList;
+
+	public ObservableList<NetworkItem> getDataList() {
+		return dataList;
+	}
+
+	public void setDataList(ObservableList<NetworkItem> dataList) {
+		this.dataList = dataList;
+		dataList.addListener(this);
+	}
 
 	private String btnScanText = "Durdur";
 
@@ -64,7 +75,7 @@ public class UCScanNetworkController implements INetworkScanListener/* , ChangeL
 				btnScanText = btnScan.getText();
 				btnScan.setText("Ýptal");
 				btnScan.setDisable(true);
-				data.clear();
+				getDataList().clear();
 				scanner = new NetworkScanThread();
 				scanner.setParams(new NetworkScanParams(cbUseSSH.isSelected(), tSSHUserName.getText(),
 						tSSHPassword.getText(), tIpRange.getText()));
@@ -80,7 +91,7 @@ public class UCScanNetworkController implements INetworkScanListener/* , ChangeL
 	@FXML
 	protected void initialize() {
 		tIPList.getItems().clear();
-		data = FXCollections.observableArrayList();
+		setDataList(FXCollections.observableArrayList());
 		/*
 		 * String hostName; String ipAddr; String macAddr;
 		 */
@@ -88,7 +99,7 @@ public class UCScanNetworkController implements INetworkScanListener/* , ChangeL
 		colHost.setCellValueFactory(new PropertyValueFactory<>("hostName"));
 		colOS.setCellValueFactory(new PropertyValueFactory<>("OS"));
 		tIPList.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-		tIPList.setItems(data);
+		tIPList.setItems(getDataList());
 //		ruknettin.widthProperty().addListener(this);
 		pbStatus.prefWidthProperty().bind(ruknettin.widthProperty().subtract(220));
 
@@ -111,7 +122,7 @@ public class UCScanNetworkController implements INetworkScanListener/* , ChangeL
 	@Override
 	public void newItemAdded(NetworkItem item) {
 		System.err.println("Ben bir item idim kendi halimde" + item.getIpAddr());
-		data.add(item);
+		getDataList().add(item);
 
 	}
 
@@ -138,8 +149,8 @@ public class UCScanNetworkController implements INetworkScanListener/* , ChangeL
 		File file = f.showSaveDialog(null);
 		if (file != null) {
 			try {
-				Files.write(file.toPath(), new NetworkItemList(data).toJson(true).getBytes(),
-						StandardOpenOption.TRUNCATE_EXISTING,StandardOpenOption.CREATE);
+				Files.write(file.toPath(), new NetworkItemList(getDataList()).toJson(true).getBytes(),
+						StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE);
 			} catch (IOException e) {
 				MessageBox.Error(e.getMessage(), "Kayýt esnasýnda hata");
 				e.printStackTrace();
@@ -159,13 +170,19 @@ public class UCScanNetworkController implements INetworkScanListener/* , ChangeL
 				byte[] bytes = Files.readAllBytes(file.toPath());
 				String s = new String(bytes);
 				NetworkItemList list = NetworkItemList.fromJson(s, NetworkItemList.class);
-				this.data.clear();
-				this.data.addAll(list.getData());
+				this.getDataList().clear();
+				this.getDataList().addAll(list.getData());
 			} catch (IOException e) {
 				MessageBox.Error(e.getMessage(), "Yukleme esnasýnda hata");
 				e.printStackTrace();
 			}
 		}
+	}
+
+	@Override
+	public void onChanged(Change<? extends NetworkItem> arg0) {
+		lblStatus.setText("Toplam makine: " + getDataList().size());
+
 	}
 
 }
