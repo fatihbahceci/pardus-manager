@@ -17,11 +17,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TableColumn;
@@ -30,11 +28,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
-import javafx.stage.WindowEvent;
 import javafx.stage.FileChooser.ExtensionFilter;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.scene.control.CheckBox;
 
 public class UCScanNetworkController
 		implements INetworkScanListener, ListChangeListener<NetworkItem>/* , ChangeListener<Number> */ {
@@ -191,22 +185,14 @@ public class UCScanNetworkController
 
 	}
 
-	private void Dummy() {
-		Stage s = new Stage();
-		s.setTitle("Makineyi yönet");
-		Scene scene = new Scene(new UCManageClientController(new NetworkItem("10.16.1.1", "Sabri")), 400, 400);
-		s.setScene(scene);
-//		s.initOwner(this);
-		s.initModality(Modality.APPLICATION_MODAL); 
-//		s.show();
-		s.showAndWait();
-
+	private void ManageSelected(NetworkItem item) {
+		UCManageClientController mv = new UCManageClientController(item);
+		mv.ShowModal();
 	}
 
 	@FXML
 	public void ACManageClient() {
-		Dummy();
-
+		ManageSelected(tIPList.getSelectionModel().getSelectedItem());
 	}
 
 }

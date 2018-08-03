@@ -32,4 +32,8 @@ public class MessageBox {
 	public static void Error(String message, String... headers) {
 		Dialog(message, Alert.AlertType.ERROR, headers);
 	}
+	
+	public static void Show(String message, String... headers) {
+		Dialog(message, Alert.AlertType.INFORMATION, headers);
+	}
 }
