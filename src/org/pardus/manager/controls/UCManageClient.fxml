@@ -3,14 +3,15 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.FlowPane?>
 
-
-<FlowPane prefHeight="246.0" prefWidth="375.0" stylesheets="@../application.css" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/10.0.1">
-   <children>
-      <Button mnemonicParsing="false" styleClass="MetroButton" stylesheets="@../application.css" text="Button" />
-      <Button mnemonicParsing="false" styleClass="MetroButton" stylesheets="@../application.css" text="Button" />
-      <Button mnemonicParsing="false" styleClass="MetroButton" stylesheets="@../application.css" text="Button" />
-      <Button mnemonicParsing="false" styleClass="MetroButton" stylesheets="@../application.css" text="Button" />
-      <Button mnemonicParsing="false" styleClass="MetroButton" stylesheets="@../application.css" text="Button" />
-      <Button mnemonicParsing="false" styleClass="MetroButton" stylesheets="@../application.css" text="Button" />
-   </children>
-</FlowPane>
+<fx:root type="javafx.scene.layout.FlowPane" prefHeight="246.0"
+	prefWidth="375.0" style="-fx-background-color: #000000;"
+	stylesheets="@../application.css"
+	xmlns="http://javafx.com/javafx/10.0.1"
+	xmlns:fx="http://javafx.com/fxml/1">
+	<children>
+		<Button mnemonicParsing="false" styleClass="MetroButton"
+			text="Betik çalıştır" />
+		<Button mnemonicParsing="false" onAction="#ACChangeHostName"
+			styleClass="MetroButton" text="Host adını değiştir" />
+	</children>
+</fx:root>

@@ -17,7 +17,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
@@ -27,7 +30,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
+import javafx.stage.WindowEvent;
 import javafx.stage.FileChooser.ExtensionFilter;
+import javafx.stage.Stage;
 import javafx.scene.control.CheckBox;
 
 public class UCScanNetworkController
@@ -182,6 +187,22 @@ public class UCScanNetworkController
 	@Override
 	public void onChanged(Change<? extends NetworkItem> arg0) {
 		lblStatus.setText("Toplam makine: " + getDataList().size());
+
+	}
+
+	private void Dummy() {
+		Stage s = new Stage();
+		s.setTitle("Makineyi yönet");
+		Scene scene = new Scene(new UCManageClientController(new NetworkItem("10.16.1.1", "Sabri")), 400, 400);
+		s.setScene(scene);
+//		s.show();
+		s.showAndWait();
+
+	}
+
+	@FXML
+	public void ACManageClient() {
+		Dummy();
 
 	}
 
