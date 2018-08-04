@@ -181,7 +181,13 @@ public class UCScanNetworkController
 
 	@Override
 	public void onChanged(Change<? extends NetworkItem> arg0) {
-		lblStatus.setText("Toplam makine: " + getDataList().size());
+
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				lblStatus.setText("Toplam makine: " + getDataList().size());
+			}
+		});
 
 	}
 

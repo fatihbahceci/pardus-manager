@@ -5,8 +5,8 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.pardus.manager.helper.HostNameRequest;
 import org.pardus.manager.helper.NetworkHelper;
+import org.pardus.manager.helper.ssh.HostNameRequest;
 import org.pardus.manager.model.NetworkItem;
 
 import javafx.fxml.FXML;

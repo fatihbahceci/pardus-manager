@@ -1,4 +1,4 @@
-package org.pardus.manager.helper;
+package org.pardus.manager.helper.ssh;
 
 import java.io.IOException;
 import java.io.InputStream;
