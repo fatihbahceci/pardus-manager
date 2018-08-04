@@ -1,8 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1">
-	<!-- TODO Add Nodes -->
-</AnchorPane>
+<fx:root prefHeight="238.0" prefWidth="294.0" type="AnchorPane" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
+	<children>
 
+
+		<Label layoutX="13.0" layoutY="2.0" text="Makine Adı:">
+		</Label>
+		<Label fx:id="lblCurrentName" layoutX="43.0" layoutY="32.0" text="Label">
+		</Label>
+		<Label layoutX="13.0" layoutY="62.0" text="Yeni Makine Adı">
+		</Label>
+		<TextField fx:id="tNewName" layoutX="43.0" layoutY="95.0" text="BSM-">
+		</TextField>
+		<Button layoutX="31.0" layoutY="149.0" mnemonicParsing="false" onAction="#ActionChangeMachineName" text="Değiştir" />
+	</children>
+</fx:root>
