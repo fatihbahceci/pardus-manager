@@ -11,6 +11,7 @@ import org.pardus.manager.model.NetworkItemList;
 import org.pardus.manager.threads.INetworkScanListener;
 import org.pardus.manager.threads.NetworkScanParams;
 import org.pardus.manager.threads.NetworkScanThread;
+import org.pardus.manager.threads.ThreadCompleteListener;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -30,8 +31,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 
-public class UCScanNetworkController
-		implements INetworkScanListener, ListChangeListener<NetworkItem>/* , ChangeListener<Number> */ {
+public class UCScanNetworkController implements INetworkScanListener, ListChangeListener<NetworkItem>,
+		ThreadCompleteListener/* , ChangeListener<Number> */ {
 	@FXML
 	private TextField tIpRange;
 	@FXML
@@ -80,6 +81,7 @@ public class UCScanNetworkController
 				scanner.setParams(new NetworkScanParams(cbUseSSH.isSelected(), tSSHUserName.getText(),
 						tSSHPassword.getText(), tIpRange.getText()));
 				scanner.addListener(this);
+				scanner.addThreadEndedListener(this);
 				scanner.start();
 				scanner.waitForIsActive(true, 5000);
 			} finally {
@@ -199,6 +201,17 @@ public class UCScanNetworkController
 	@FXML
 	public void ACManageClient() {
 		ManageSelected(tIPList.getSelectionModel().getSelectedItem());
+	}
+
+	@Override
+	public void notifyOfThreadComplete(Thread thread) {
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				btnScan.setText(btnScanText);
+			}
+		});
+
 	}
 
 }

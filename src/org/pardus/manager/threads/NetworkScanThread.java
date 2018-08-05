@@ -4,6 +4,8 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.pardus.manager.helper.NetworkHelper;
 import org.pardus.manager.helper.ssh.HostNameRequest;
@@ -55,7 +57,11 @@ public class NetworkScanThread extends Thread {
 
 	@Override
 	public void run() {
-		ACScanNetwork();
+		try {
+			ACScanNetwork();
+		} finally {
+			notifyListeners();
+		}
 
 	}
 
@@ -73,7 +79,7 @@ public class NetworkScanThread extends Thread {
 
 					try {
 						hostName = r.ReadHostName();
-						System.out.println("SSH ile aldým:" + hostName);
+						System.out.println("SSH ile aldým: " + hostName);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -82,7 +88,7 @@ public class NetworkScanThread extends Thread {
 
 				if (hostName == null || hostName.trim().isEmpty()) {
 					hostName = ip.getHostName();
-					System.out.println("Get Host ile aldým:" + hostName);
+					System.out.println("Get Host ile aldým: " + hostName);
 				}
 				return new NetworkItem(ipAddr, hostName).setOS(isLinux ? "Linux" : "Unknown");
 			}
@@ -211,6 +217,22 @@ public class NetworkScanThread extends Thread {
 			}
 		}
 
+	}
+
+	private final Set<ThreadCompleteListener> threadEndedListener = new CopyOnWriteArraySet<ThreadCompleteListener>();
+
+	public final void addThreadEndedListener(final ThreadCompleteListener listener) {
+		threadEndedListener.add(listener);
+	}
+
+	public final void removeListener(final ThreadCompleteListener listener) {
+		threadEndedListener.remove(listener);
+	}
+
+	private final void notifyListeners() {
+		for (ThreadCompleteListener listener : threadEndedListener) {
+			listener.notifyOfThreadComplete(this);
+		}
 	}
 
 }
