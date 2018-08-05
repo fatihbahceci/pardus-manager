@@ -5,13 +5,13 @@
 
 <fx:root type="javafx.scene.layout.FlowPane" prefHeight="246.0"
 	prefWidth="375.0" style="-fx-background-color: #000000;"
-	stylesheets="@../application.css"
+	stylesheets="@../MetroStyle.css"
 	xmlns="http://javafx.com/javafx/10.0.1"
 	xmlns:fx="http://javafx.com/fxml/1">
 	<children>
-		<Button mnemonicParsing="false" styleClass="MetroButton"
+		<Button mnemonicParsing="false"
 			text="Betik çalıştır" />
 		<Button mnemonicParsing="false" onAction="#ACChangeHostName"
-			styleClass="MetroButton" text="Host adını değiştir" />
+			 text="Host adını değiştir" />
 	</children>
 </fx:root>

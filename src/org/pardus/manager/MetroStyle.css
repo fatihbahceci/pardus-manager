@@ -1,0 +1,41 @@
+.button {
+-fx-border-insets: 5.0px;
+-fx-background-insets: 5.0px;
+-fx-padding: 30.0; 
+-fx-background-color:#178BFC;
+-fx-text-fill: rgb(255.0,255.0,255.0);
+-fx-font-weight: bold;
+-fx-font-size:34.0px ;
+
+}
+
+.button:hover {
+-fx-border-insets: 5.0px;
+-fx-background-insets: 5.0px;
+-fx-padding: 30.0; 
+-fx-background-color:#168BEC;
+-fx-text-fill: rgb(255.0,255.0,255.0);
+-fx-font-weight: bold;
+-fx-font-size:34.0px ;
+
+}
+
+.button:pressed {
+   -fx-background-color:#FF0000;
+}
+
+.label {
+-fx-text-fill: rgb(255.0,255.0,255.0);
+-fx-font-weight: bold;
+-fx-font-size:34.0px ;	
+}
+
+
+.root {
+	-fx-background-color: #000000;
+	}
+.text-field {
+		-fx-background-color:rgb(199.0,205.0,190.0);
+		-fx-font-weight: bold;
+-fx-font-size:34.0px ;
+}
