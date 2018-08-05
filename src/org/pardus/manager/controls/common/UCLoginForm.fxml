@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@../../MetroStyle.css" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/10.0.1">
+<fx:root type="javafx.scene.layout.GridPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@../../MetroStyle.css" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/10.0.1">
   <columnConstraints>
       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="5.0" prefWidth="100.0" />
       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="25.0" prefWidth="100.0" />
@@ -29,13 +29,13 @@
    <children>
       <Label text="Kullanıcı" GridPane.columnIndex="1" GridPane.rowIndex="1" />
       <Label text="Parola" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-      <TextField GridPane.columnIndex="3" GridPane.rowIndex="1" />
-      <PasswordField GridPane.columnIndex="3" GridPane.rowIndex="3" />
+      <TextField fx:id="tUserName" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+      <PasswordField fx:id="tPassword" GridPane.columnIndex="3" GridPane.rowIndex="3" />
       <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.rowIndex="5">
          <children>
-            <Button mnemonicParsing="false" text="Giriş" />
-            <Button mnemonicParsing="false" text="İptal" />
+            <Button mnemonicParsing="false" onAction="#ACLogin" text="Giriş" />
+            <Button mnemonicParsing="false" onAction="#ACCancel" text="İptal" />
          </children>
       </HBox>
    </children>
-</GridPane>
+</fx:root>

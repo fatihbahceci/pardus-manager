@@ -2,6 +2,7 @@ package org.pardus.manager;
 
 import java.io.IOException;
 
+import org.pardus.manager.controls.common.UCLoginFormController;
 import org.pardus.manager.helper.MessageBox;
 
 import javafx.fxml.FXML;
@@ -19,7 +20,8 @@ public class MainPanelController {
 
 	@FXML
 	public void ActionCloseApplication() {
-
+//		UCLoginFormController l = new UCLoginFormController();
+//		System.out.println(l.Login());
 		if (MessageBox.Query("Uygulama kapatýlsýn mý?", "Program kapatýlacak")) {
 //			Platform.exit();
 			Stage st = (Stage) root.getScene().getWindow();
