@@ -2,9 +2,7 @@ package org.pardus.manager.helper.ssh;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 
-import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
@@ -30,9 +28,8 @@ public class SSHRequestBase {
 	}
 
 	Session session = null;
-	Channel channel = null;
+
 	private InputStream in;
-	private OutputStream out;
 
 	private void connect() throws JSchException, IOException {
 		JSch jsch = new JSch();
@@ -41,22 +38,38 @@ public class SSHRequestBase {
 		session.setConfig("StrictHostKeyChecking", "no");
 		session.setTimeout(timeOut);
 		session.connect();
-		channel = session.openChannel("exec");
 
-		in = channel.getInputStream();
-		out = channel.getOutputStream();
-		((ChannelExec) channel).setErrStream(System.err);
-		channel.connect();
 	}
 
-	private void executeCommand(String c) throws IOException {
-//		((ChannelExec) channel).setCommand(c);
+	ChannelExec currentChannel;
+
+	private void openNewChannel() throws JSchException, IOException {
+		closeExistingChannel();
+		currentChannel = (ChannelExec) session.openChannel("exec");
+		in = currentChannel.getInputStream();
+		currentChannel.setErrStream(System.err);
+	}
+
+	private void closeExistingChannel() {
+		try {
+			if (currentChannel != null) {
+				currentChannel.disconnect();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void executeCommand(String c) throws IOException, JSchException {
+		openNewChannel();
+		currentChannel.setCommand(c);
+		currentChannel.connect();
 		// out.write((sudo_pass + "\n").getBytes());
-		out.write((c + "\n").getBytes());
-		out.flush();
+		// out.flush();
+
 	}
 
-	private String read() throws IOException {
+	private String read() throws IOException, JSchException {
 		StringBuilder sb = new StringBuilder();
 		byte[] tmp = new byte[1024];
 		while (true) {
@@ -66,8 +79,8 @@ public class SSHRequestBase {
 					break;
 				sb.append(new String(tmp, 0, i));
 			}
-			if (channel.isClosed()) {
-				System.out.println("exit-status: " + channel.getExitStatus());
+			if (currentChannel.isClosed()) {
+				System.out.println("exit-status: " + currentChannel.getExitStatus());
 				break;
 			}
 			try {
@@ -79,28 +92,47 @@ public class SSHRequestBase {
 		return sb.toString();
 	}
 
-	void disconnect() {
+	public void disconnect() {
 		try {
-			if (channel != null)
-				channel.disconnect();
+			closeExistingChannel();
 			if (session != null)
 				session.disconnect();
 		} catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
 		}
 	}
 
-	public String Test() throws JSchException, IOException {
-//		long t = System.currentTimeMillis();
+	/**
+	 * 
+	 * @param command
+	 * @return
+	 * @throws JSchException
+	 * @throws IOException
+	 */
+	public String exec(String command) throws JSchException, IOException {
+
+		return exec(command, true);
+	}
+
+	/**
+	 * 
+	 * @param command
+	 * @param disconnectAfterExec
+	 * @return
+	 * @throws JSchException
+	 * @throws IOException
+	 */
+	public String exec(String command, boolean disconnectAfterExec) throws JSchException, IOException {
 
 		try {
 			connect();
-			executeCommand("cat /etc/hostname");
+			executeCommand(command);
 			return read();
 
 		} finally {
-			disconnect();
+			if (disconnectAfterExec)
+				disconnect();
 		}
-
 	}
+
 }
