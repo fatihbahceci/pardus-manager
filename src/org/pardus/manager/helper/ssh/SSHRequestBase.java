@@ -42,6 +42,7 @@ public class SSHRequestBase {
 	}
 
 	ChannelExec currentChannel;
+	int lastExitStatus;
 
 	private void openNewChannel() throws JSchException, IOException {
 		closeExistingChannel();
@@ -69,6 +70,10 @@ public class SSHRequestBase {
 
 	}
 
+	public int getLastExitStatus() {
+		return lastExitStatus;
+	}
+
 	private String read() throws IOException, JSchException {
 		StringBuilder sb = new StringBuilder();
 		byte[] tmp = new byte[1024];
@@ -80,7 +85,8 @@ public class SSHRequestBase {
 				sb.append(new String(tmp, 0, i));
 			}
 			if (currentChannel.isClosed()) {
-				System.out.println("exit-status: " + currentChannel.getExitStatus());
+				lastExitStatus = currentChannel.getExitStatus();
+				System.out.println("exit-status: " + lastExitStatus);
 				break;
 			}
 			try {
