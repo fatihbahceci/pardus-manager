@@ -48,7 +48,7 @@ public class SSHRequestBase {
 		closeExistingChannel();
 		currentChannel = (ChannelExec) session.openChannel("exec");
 		in = currentChannel.getInputStream();
-		currentChannel.setErrStream(System.err);
+		currentChannel.setErrStream(System.out);
 	}
 
 	private void closeExistingChannel() {
