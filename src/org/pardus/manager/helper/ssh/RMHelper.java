@@ -1,5 +1,7 @@
 package org.pardus.manager.helper.ssh;
 
+import org.pardus.manager.controls.common.LoginResult;
+
 public class RMHelper {
 
 	public static boolean isHasRootPrivileges(SSHRequestBase connection) {
@@ -20,4 +22,17 @@ public class RMHelper {
 		}
 	}
 
+	public static boolean Login(String host, LoginResult login) {
+		SSHRequestBase r = new SSHRequestBase(login.getUserName(), host, login.getPassword());
+		try {
+			r.connect();
+			return true;
+		} catch (Exception e) {
+			// TODO: handle exception
+			return false;
+		}
+		finally {
+			r.disconnect();
+		}
+	}
 }

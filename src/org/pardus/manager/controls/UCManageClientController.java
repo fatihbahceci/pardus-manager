@@ -5,6 +5,8 @@ import java.io.IOException;
 import org.pardus.manager.controls.common.LoginResult;
 import org.pardus.manager.controls.common.UCLoginFormController;
 import org.pardus.manager.controls.remotemanagement.RMChangeHostNameController;
+import org.pardus.manager.helper.MessageBox;
+import org.pardus.manager.helper.ssh.RMHelper;
 import org.pardus.manager.model.NetworkItem;
 
 import javafx.event.ActionEvent;
@@ -19,13 +21,27 @@ public class UCManageClientController extends FlowPane {
 
 	private NetworkItem item;
 	private Stage s;
+	private LoginResult loginResult;
+	
+	LoginResult getLogin() {
+		if (loginResult == null) {
+			LoginResult lr = new UCLoginFormController().Login();
+			if (lr.isModalResult()) {
+				if (RMHelper.Login(item.getIpAddr(), lr)) {
+					this.loginResult = lr;
+				} else {
+					MessageBox.Error("Geçersiz kullanýcý adý veya parola", "Login failed");
+				}
+			}
+		}
+		return loginResult;
+	}
 
 	// Event Listener on Button.onAction
 	@FXML
 	public void ACChangeHostName(ActionEvent event) {
-		LoginResult lr = new UCLoginFormController().Login();
-		if (lr.isModalResult()) {
-			new RMChangeHostNameController(item , lr).ShowModal();
+		if (getLogin() != null) {
+			new RMChangeHostNameController(item, getLogin()).ShowModal();
 		}
 	}
 

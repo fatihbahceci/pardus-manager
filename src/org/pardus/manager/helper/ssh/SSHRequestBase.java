@@ -31,8 +31,14 @@ public class SSHRequestBase {
 	Session session = null;
 
 	private InputStream in;
+/**
+ * {@link #exec(String)} zaten connect metodunu çaðýrýyor
+ * @throws JSchException
+ * @throws IOException
+ */
+	public void connect() throws JSchException, IOException {	
+		//TODO her komut için yeni balantý açýyor. Daha sonra burasý için baðlý ise tekrar baðlanmamasý için satýr ekle
 
-	private void connect() throws JSchException, IOException {
 		JSch jsch = new JSch();
 		session = jsch.getSession(user, host, 22);
 		session.setPassword(password);
@@ -112,7 +118,8 @@ public class SSHRequestBase {
 			}
 
 		}
-		String s = sb.toString().trim();
+		//Trim ifadesi doðru bir kara mý bilemedim. Belki dönen sonuç boþluk içeriyordur. O yüzden trim ifadesini kaldýrdým. 
+		String s = sb.toString();//.trim();
 		if (s.endsWith("\n")) {
 			s = s.substring(0, s.length() - 1);
 		}
