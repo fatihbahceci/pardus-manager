@@ -112,7 +112,14 @@ public class SSHRequestBase {
 			}
 
 		}
-		return sb.toString();
+		String s = sb.toString().trim();
+		if (s.endsWith("\n")) {
+			s = s.substring(0, s.length() - 1);
+		}
+		if (s.endsWith("\r")) {
+			s = s.substring(0, s.length() - 1);
+		}
+		return s;
 	}
 
 	public void disconnect() {
