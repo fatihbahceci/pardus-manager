@@ -3,10 +3,7 @@ package org.pardus.manager.controls.remotemanagement;
 import java.io.IOException;
 
 import org.pardus.manager.controls.common.LoginResult;
-import org.pardus.manager.helper.Console;
-import org.pardus.manager.helper.ConsoleProcessResult;
 import org.pardus.manager.helper.MessageBox;
-import org.pardus.manager.helper.SYSHelper;
 import org.pardus.manager.helper.ssh.RMHelper;
 import org.pardus.manager.helper.ssh.SSHRequestBase;
 import org.pardus.manager.model.NetworkItem;
@@ -19,7 +16,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -45,24 +41,25 @@ public class RMChangeHostNameController extends AnchorPane {
 		try {
 			String newName = tNewName.getText();
 			if (MessageBox.Query("Makine adý" + newName + " olarak deðiþtirilecek", "Makine adý deðiþsin mi?")) {
-
 				if (RMHelper.isHasRootPrivileges(r)) {
 					try {
 						String s = r.exec("cat /etc/hostname");
 						if (r.isSuccess()) {
 							log("Mevcut makine adý:" + s);
-							s = r.exec("bash -c echo " + newName + " > /etc/hostname");
+//							s = r.exec("bash -c echo " + newName + " > /etc/hostname");
+							s = r.exec("echo " + newName + " > /etc/hostname");
 							log(s);
 							if (r.isSuccess()) {
-								s = r.exec("cat /etc/hostname");
+								s = r.exec("cat /etc/hostname").replace("\r", "").replace("\n", "");
 								if (r.isSuccess()) {
 
 									if (s.equals(newName)) {
 										log("Hostname deðiþtirildi. Yeni host:" + newName);
 										r.exec("sed -i 2d /etc/hosts");
-										r.exec("sed -i 1 a 127.0.0.1 " + newName + "/etc/hosts");
+										r.exec("sed -i \"1 a 127.0.0.1 " + newName + "\" /etc/hosts");
+										MessageBox.Show("Hostname deðiþtirildi. Yeni host:" + newName);
 									} else {
-										log("Hostname deðiþtirilemedi. " + s);
+										log(String.format("Hostname deðiþtirilemedi.(%s)-(%s) ", s, newName));
 									}
 								} else {
 									log("cat2 baþarýsýz: " + r.getLastExitStatus());
@@ -83,10 +80,11 @@ public class RMChangeHostNameController extends AnchorPane {
 			}
 
 		} catch (JSchException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			r.disconnect();
 		}
-		r.disconnect();
+
 	}
 
 	public RMChangeHostNameController(NetworkItem item, LoginResult loginResult) {

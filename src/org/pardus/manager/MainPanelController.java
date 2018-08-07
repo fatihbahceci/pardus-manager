@@ -2,7 +2,6 @@ package org.pardus.manager;
 
 import java.io.IOException;
 
-import org.pardus.manager.controls.common.UCLoginFormController;
 import org.pardus.manager.helper.MessageBox;
 
 import javafx.fxml.FXML;

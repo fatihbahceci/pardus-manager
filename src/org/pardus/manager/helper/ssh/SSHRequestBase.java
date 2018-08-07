@@ -146,7 +146,7 @@ public class SSHRequestBase {
 	 * @throws IOException
 	 */
 	public String exec(String command, boolean disconnectAfterExec) throws JSchException, IOException {
-
+		System.out.println(command);
 		try {
 			connect();
 			executeCommand(command);
