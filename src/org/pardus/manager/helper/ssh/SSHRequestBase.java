@@ -2,6 +2,7 @@ package org.pardus.manager.helper.ssh;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.JSch;
@@ -43,12 +44,28 @@ public class SSHRequestBase {
 
 	ChannelExec currentChannel;
 	int lastExitStatus;
+	boolean alwaysKeepConnectionAfterCommand = false;
+
+	public boolean isAlwaysKeepConnectionAfterCommand() {
+		return alwaysKeepConnectionAfterCommand;
+	}
+
+	public void setAlwaysKeepConnectionAfterCommand(boolean alwaysKeepConnectionAfterCommand) {
+		this.alwaysKeepConnectionAfterCommand = alwaysKeepConnectionAfterCommand;
+	}
 
 	private void openNewChannel() throws JSchException, IOException {
 		closeExistingChannel();
 		currentChannel = (ChannelExec) session.openChannel("exec");
 		in = currentChannel.getInputStream();
-		currentChannel.setErrStream(System.out);
+		currentChannel.setErrStream(new OutputStream() {
+
+			@Override
+			public void write(int b) throws IOException {
+				System.out.write(b);
+
+			}
+		});
 	}
 
 	private void closeExistingChannel() {
@@ -117,7 +134,7 @@ public class SSHRequestBase {
 	 */
 	public String exec(String command) throws JSchException, IOException {
 
-		return exec(command, true);
+		return exec(command, !isAlwaysKeepConnectionAfterCommand());
 	}
 
 	/**
@@ -139,6 +156,12 @@ public class SSHRequestBase {
 			if (disconnectAfterExec)
 				disconnect();
 		}
+	}
+
+	public boolean isSuccess() {
+
+		return getLastExitStatus() == 0;
+
 	}
 
 }

@@ -1,6 +1,10 @@
 package org.pardus.manager;
 
+import java.io.IOException;
+
 import org.pardus.manager.helper.MessageBox;
+
+import com.jcraft.jsch.JSchException;
 
 import javafx.application.Application;
 import javafx.event.EventHandler;
@@ -9,8 +13,28 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import org.pardus.manager.helper.ssh.SSHRequestBase;;
 
 public class Main extends Application {
+	
+	
+	static void RootTest() throws JSchException, IOException {
+		System.out.println("Baþla");
+		SSHRequestBase r = new SSHRequestBase("root", "192.168.229.129", "birparola");
+		//Bu root kullanýcýsý mý 0: root
+		System.out.println("Exec result:" + r.exec("id -u"));
+		//0 Komut baþarýlý
+		System.out.println("Exec status:" + r.getLastExitStatus());
+		//Kasten olmayan bir komut
+		System.out.println("Exec result:" + r.exec("u"));
+		//127 Komut bulunamadý
+		System.out.println("Exec status:" + r.getLastExitStatus());
+		//Bu kullanýcý super user yetkilerine sahip mi? 
+		System.out.println("Exec result:" + r.exec("sudo -v"));
+		// 0 : Sahip 1: deðil
+		System.out.println("Exec status:" + r.getLastExitStatus());
+		System.out.println("Bitir");
+	}
 
 	@Override
 	public void start(Stage primaryStage) {
