@@ -170,7 +170,7 @@ public class UCScanNetworkController implements INetworkScanListener, ListChange
 		if (file != null) {
 			try {
 				byte[] bytes = Files.readAllBytes(file.toPath());
-				String s = new String(bytes);
+				String s = new String(bytes , "UTF-8");
 				NetworkItemList list = NetworkItemList.fromJson(s, NetworkItemList.class);
 				this.getDataList().clear();
 				this.getDataList().addAll(list.getData());
