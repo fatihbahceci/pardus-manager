@@ -15,20 +15,28 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-public class RMChangeHostNameController extends AnchorPane {
+public class RMChangeHostNameController extends BorderPane {
 	@FXML
 	private Label lblCurrentName;
 	@FXML
 	private TextField tNewName;
+	@FXML
+	private TextArea tLog;
 	private NetworkItem item;
 	private LoginResult loginResult;
 
 	private void log(String s) {
+		if (tLog != null) {
+			tLog.appendText(s + "\r\n");
+		} else {
+			System.out.println("tLog neden null? " + s);
+		}
 		System.out.println(s);
 	}
 

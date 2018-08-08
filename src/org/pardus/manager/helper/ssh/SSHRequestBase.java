@@ -115,7 +115,7 @@ public class SSHRequestBase {
 				break;
 			}
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(300);
 			} catch (Exception ee) {
 			}
 
