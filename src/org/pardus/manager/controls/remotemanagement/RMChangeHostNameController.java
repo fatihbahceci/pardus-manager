@@ -3,6 +3,7 @@ package org.pardus.manager.controls.remotemanagement;
 import java.io.IOException;
 
 import org.pardus.manager.controls.common.LoginResult;
+import org.pardus.manager.controls.common.StringTraceListener;
 import org.pardus.manager.helper.MessageBox;
 import org.pardus.manager.helper.ssh.RMHelper;
 import org.pardus.manager.helper.ssh.SSHRequestBase;
@@ -10,6 +11,7 @@ import org.pardus.manager.model.NetworkItem;
 
 import com.jcraft.jsch.JSchException;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -21,7 +23,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-public class RMChangeHostNameController extends BorderPane {
+public class RMChangeHostNameController extends BorderPane implements StringTraceListener {
 	@FXML
 	private Label lblCurrentName;
 	@FXML
@@ -33,7 +35,13 @@ public class RMChangeHostNameController extends BorderPane {
 
 	private void log(String s) {
 		if (tLog != null) {
-			tLog.appendText(s + "\r\n");
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					tLog.appendText(s + "\r\n");
+				}
+			});
+
 		} else {
 			System.out.println("tLog neden null? " + s);
 		}
@@ -45,6 +53,7 @@ public class RMChangeHostNameController extends BorderPane {
 	public void ActionChangeMachineName(ActionEvent event) {
 
 		SSHRequestBase r = new SSHRequestBase(loginResult.getUserName(), item.getIpAddr(), loginResult.getPassword());
+		r.addTraceListener(this);
 		r.setAlwaysKeepConnectionAfterCommand(true);
 		try {
 			String newName = tNewName.getText();
@@ -123,5 +132,11 @@ public class RMChangeHostNameController extends BorderPane {
 
 //		s.show();
 		s.showAndWait();
+	}
+
+	@Override
+	public void OnStringTrace(String trace) {
+		log(trace);
+
 	}
 }

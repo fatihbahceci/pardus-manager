@@ -3,6 +3,10 @@ package org.pardus.manager.helper.ssh;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
+
+import org.pardus.manager.controls.common.StringTraceListener;
 
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.JSch;
@@ -70,7 +74,7 @@ public class SSHRequestBase {
 
 			@Override
 			public void write(int b) throws IOException {
-				System.out.write(b);
+				trace(b);
 
 			}
 		});
@@ -111,7 +115,7 @@ public class SSHRequestBase {
 			}
 			if (currentChannel.isClosed()) {
 				lastExitStatus = currentChannel.getExitStatus();
-				System.out.println("exit-status: " + lastExitStatus);
+				trace("Exit: " + lastExitStatus);
 				break;
 			}
 			try {
@@ -163,7 +167,7 @@ public class SSHRequestBase {
 	 * @throws IOException
 	 */
 	public String exec(String command, boolean disconnectAfterExec) throws JSchException, IOException {
-		System.out.println(command);
+		trace(command);
 		try {
 			connect();
 			executeCommand(command);
@@ -178,6 +182,40 @@ public class SSHRequestBase {
 	public boolean isSuccess() {
 
 		return getLastExitStatus() == 0;
+
+	}
+
+	private final Set<StringTraceListener> traceListener = new CopyOnWriteArraySet<StringTraceListener>();
+
+	public final void addTraceListener(final StringTraceListener listener) {
+		traceListener.add(listener);
+	}
+
+	public final void removeTraceListener(final StringTraceListener listener) {
+		traceListener.remove(listener);
+	}
+
+	private final void notifyListeners(String line) {
+		for (StringTraceListener listener : traceListener) {
+			listener.OnStringTrace(line);
+		}
+	}
+
+	void trace(String s) {
+		System.out.println(s);
+		notifyListeners(s);
+	}
+
+	String traceBuff = "";
+
+	void trace(int b) {
+		System.out.write(b);
+		if (b == 10) {
+			trace("E:" + traceBuff);
+			traceBuff = "";
+		} else {
+			traceBuff += (char) b;
+		}
 
 	}
 
