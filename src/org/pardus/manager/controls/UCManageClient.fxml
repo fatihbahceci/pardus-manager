@@ -3,15 +3,9 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.FlowPane?>
 
-<fx:root type="javafx.scene.layout.FlowPane" prefHeight="246.0"
-	prefWidth="375.0" style="-fx-background-color: #000000;"
-	stylesheets="@../MetroStyle.css"
-	xmlns="http://javafx.com/javafx/10.0.1"
-	xmlns:fx="http://javafx.com/fxml/1">
+<fx:root prefHeight="246.0" prefWidth="375.0" style="-fx-background-color: #000000;" stylesheets="@../MetroStyle.css" type="javafx.scene.layout.FlowPane" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1">
 	<children>
-		<Button mnemonicParsing="false"
-			text="Betik çalıştır" />
-		<Button mnemonicParsing="false" onAction="#ACChangeHostName"
-			 text="Host adını değiştir" />
+		<Button mnemonicParsing="false" onAction="#ACExecuteScript" text="Betik çalıştır" />
+		<Button mnemonicParsing="false" onAction="#ACChangeHostName" text="Host adını değiştir" />
 	</children>
 </fx:root>

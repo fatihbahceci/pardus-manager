@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.pardus.manager.controls.common.LoginResult;
 import org.pardus.manager.controls.common.UCLoginFormController;
 import org.pardus.manager.controls.remotemanagement.RMChangeHostNameController;
+import org.pardus.manager.controls.remotemanagement.RMExecuteScriptController;
 import org.pardus.manager.helper.MessageBox;
 import org.pardus.manager.helper.ssh.RMHelper;
 import org.pardus.manager.model.NetworkItem;
@@ -42,6 +43,13 @@ public class UCManageClientController extends FlowPane {
 	public void ACChangeHostName(ActionEvent event) {
 		if (getLogin() != null) {
 			new RMChangeHostNameController(item, getLogin()).ShowModal();
+		}
+	}
+	
+	@FXML
+	public void ACExecuteScript(ActionEvent event) {
+		if (getLogin() != null) {
+			new RMExecuteScriptController(item,getLogin()).ShowModal();
 		}
 	}
 
