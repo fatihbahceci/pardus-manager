@@ -22,7 +22,7 @@ public class UCManageClientController extends FlowPane {
 	private NetworkItem item;
 	private Stage s;
 	private LoginResult loginResult;
-	
+
 	LoginResult getLogin() {
 		if (loginResult == null) {
 			LoginResult lr = new UCLoginFormController().Login();
