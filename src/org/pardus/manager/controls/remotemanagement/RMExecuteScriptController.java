@@ -100,9 +100,9 @@ public class RMExecuteScriptController extends GridPane implements StringTraceLi
 			r.exec(String.format("chmod 755 %s", fileName));
 			String params = tParams.getText();
 			if (params != null && params.trim().length() > 0) {
-				r.exec(fileName + " " + params);
+				log(r.exec(fileName + " " + params));
 			} else {
-				r.exec(fileName);
+				log(r.exec(fileName));
 			}
 			if (r.isSuccess()) {
 				MessageBox.Show("Script çalýþtýrma iþlemi baþarýlý");
@@ -137,10 +137,16 @@ public class RMExecuteScriptController extends GridPane implements StringTraceLi
 	@Override
 	public void OnStringTrace(String trace) {
 		log(trace);
-
 	}
 
 	private void log(String s) {
+//		try {
+//			Thread.sleep(10);
+//			
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+		//Bu runlater çok baþýmýzý aðrýtacak
 		if (tConsole != null) {
 			Platform.runLater(new Runnable() {
 				@Override
