@@ -76,48 +76,56 @@ public class RMExecuteScriptController extends GridPane implements StringTraceLi
 	// Event Listener on Button.onAction
 	@FXML
 	public void ACExecuteScript(ActionEvent event) {
-		SSHRequestBase r = new SSHRequestBase(loginResult.getUserName(), item.getIpAddr(), loginResult.getPassword());
+		final SSHRequestBase r = new SSHRequestBase(loginResult.getUserName(), item.getIpAddr(), loginResult.getPassword());
 		r.addTraceListener(this);
 		r.setAlwaysKeepConnectionAfterCommand(true);
-		final String fileName = "/tmp/temp.sh";
-		try {
-			if (MessageBox.Query(
-					"Belirlenen script çalýþtýrýlacak. Eðer kullanýcýnýn root eriþimi yok ise bazý komutlar çalýþmayabilir",
-					"Script çalýþtýýrlsýn mý?")) {
-				// noluuuuur nolmaz
-				r.exec("mkdir /tmp");
-				r.exec(String.format("rm '%s'", fileName));
+		new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+			
+				final String fileName = "/tmp/temp.sh";
+				try {
+					if (MessageBox.Query(
+							"Belirlenen script çalýþtýrýlacak. Eðer kullanýcýnýn root eriþimi yok ise bazý komutlar çalýþmayabilir",
+							"Script çalýþtýýrlsýn mý?")) {
+						// noluuuuur nolmaz
+						r.exec("mkdir /tmp");
+						r.exec(String.format("rm '%s'", fileName));
 
-				String[] lines = tScript.getText().replace("\r", "").split("\n");
-				for (String line : lines) {
-					r.exec(String.format("echo '%s' >> %s", line.replace("'", "'\\''"), fileName));
+						String[] lines = tScript.getText().replace("\r", "").split("\n");
+						for (String line : lines) {
+							r.exec(String.format("echo '%s' >> %s", line.replace("'", "'\\''"), fileName));
+						}
+
+					}
+					log("Kontrol...");
+					log(r.exec(String.format("cat %s", fileName)));
+					log("Çalýþtýlýyor...");
+					r.exec(String.format("chmod 755 %s", fileName));
+					String params = tParams.getText();
+					if (params != null && params.trim().length() > 0) {
+						log(r.exec(fileName + " " + params));
+					} else {
+						log(r.exec(fileName));
+					}
+					if (r.isSuccess()) {
+						MessageBox.Show("Script çalýþtýrma iþlemi baþarýlý");
+					} else {
+						MessageBox.Error("Script çalýþtýrma iþlemi hata kodu verdi. Kod: " + r.getLastExitStatus());
+					}
+
+				} catch (JSchException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} finally {
+					r.disconnect();
 				}
-
+				
 			}
-			log("Kontrol...");
-			log(r.exec(String.format("cat %s", fileName)));
-			log("Çalýþtýlýyor...");
-			r.exec(String.format("chmod 755 %s", fileName));
-			String params = tParams.getText();
-			if (params != null && params.trim().length() > 0) {
-				log(r.exec(fileName + " " + params));
-			} else {
-				log(r.exec(fileName));
-			}
-			if (r.isSuccess()) {
-				MessageBox.Show("Script çalýþtýrma iþlemi baþarýlý");
-			} else {
-				MessageBox.Error("Script çalýþtýrma iþlemi hata kodu verdi. Kod: " + r.getLastExitStatus());
-			}
-
-		} catch (JSchException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-			r.disconnect();
-		}
+		}).run();
 
 	}
 
